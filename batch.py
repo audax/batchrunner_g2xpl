@@ -30,7 +30,7 @@ def generate_coords(start, stop, width):
                         yield p_x, p_y
 
 def parse_plan(plan):
-    lines = filter(None, plan.readlines())
+    lines = filter(None, (line.strip() for line in plan.readlines()))
     waypoints = lines[4:]
     for line in waypoints:
         parts = line.split()
@@ -68,7 +68,8 @@ def main(plan):
         coordinates = coordinates_for_segments(segments(route))
 
     with open(LOG, 'r+') as log:
-            points = set(tuple(map(int, line.split(', '))) for line in log.readlines())
+            points = set(tuple(map(int, line.split(', '))) for line in log.readlines()
+                    if not line.startswith('#'))
             coordinates -= points
 
     for lat, long in sorted(coordinates):
