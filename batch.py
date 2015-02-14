@@ -1,6 +1,7 @@
 import re
 import sys
 import subprocess
+from os import path
 
 WIDTH = 1
 LOG = 'batch.log'
@@ -59,10 +60,11 @@ def run_g2xpl(lat, long):
         ini = re.sub('plane_lat\s*=\s*[-+0-9.]+',
                                  'plane_lat='+str(lat+0.5),  ini)
 
-        with open('g2xpl.ini', 'w') as f:
+        with open(path.join(G2XPL_DIRECTORY, 'g2xpl.ini'), 'w') as f:
                 f.write(ini)
 
-        ret = subprocess.call('g2xpl.exe', stdout=sys.stdout, stderr=sys.stderr, cwd=G2XPL_DIRECTORY)
+        ret = subprocess.call(path.join(G2XPL_DIRECTORY, 'g2xpl.exe'),
+                              stdout=sys.stdout, stderr=sys.stderr, cwd=G2XPL_DIRECTORY)
         return ret == 0
 
 def main(plan):                        
