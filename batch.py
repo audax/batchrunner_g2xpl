@@ -1,15 +1,11 @@
 import re
 import sys
-import subprocess
+import subprocess as sub
 from os import path
 
 WIDTH = 1
 LOG = 'batch.log'
 INI = 'g2xpl.ini'
-G2XPL_DIRECTORY = '.'
-
-class G2XPLException(Exception):
-    pass
 
 def surrounds(point, width):
         x, y = point
@@ -63,8 +59,7 @@ def run_g2xpl(lat, long):
         with open(path.join(G2XPL_DIRECTORY, 'g2xpl.ini'), 'w') as f:
                 f.write(ini)
 
-        ret = subprocess.call(path.join(G2XPL_DIRECTORY, 'g2xpl.exe'),
-                              stdout=sys.stdout, stderr=sys.stderr, cwd=G2XPL_DIRECTORY)
+        ret = sub.call(path.join(G2XPL_DIRECTORY, 'g2xpl.exe'), cwd=G2XPL_DIRECTORY)
         return ret == 0
 
 def main(plan):                        
@@ -77,11 +72,11 @@ def main(plan):
             coordinates -= points
 
     for lat, long in sorted(coordinates):
-        if run_g2xpl(lat, long):
-            with open(LOG, 'a') as log:
-                    log.write("{}, {}\n".format(lat, long))
-        else:
-            raise G2XPLException('Error running G2XPL, see shell output')
+        with open(LOG, 'a') as log:
+            entry = "{}, {}\n".format(lat, long)
+            if not run_g2xpl(lat, long):
+                entry = '#'+entry
+            log.write(entry)
 
 if __name__ == '__main__':
     plan = sys.argv[1]
