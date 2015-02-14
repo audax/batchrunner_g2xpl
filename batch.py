@@ -5,7 +5,7 @@ from os import path
 
 WIDTH = 1
 LOG = 'batch.log'
-G2XPL_DIRECTORY = ''
+G2XPL_DIRECTORY = '.'
 INI = 'g2xpl.ini'
 
 def surrounds(point, width):
