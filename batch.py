@@ -74,8 +74,15 @@ def run_g2xpl(lat, long):
     ret = sub.call(path.join(G2XPL_DIRECTORY, 'g2xpl.exe'))
     return ret == 0
 
-def main(plan):                        
-    with open(plan, 'r') as p:
+def main():
+    parser = argparse.ArgumentParser(description='Batchrunner for g2xpl')
+    parser.add_argument('plan', metavar='PLAN', type=file, help='Flightplan in .fms format')
+    parser.add_argument('--dummy', action='store_true',
+            help='Print the coordinates of the tiles and exit')
+
+    args = parser.parse_args()
+
+    with args.plan as p:
         route = parse_plan(p)
         coordinates = coordinates_for_segments(segments(route))
 
@@ -87,6 +94,10 @@ def main(plan):
     except IOError:
         pass
 
+    if args.dummy:
+        print sorted(coordinates)
+        return
+
     for lat, long in sorted(coordinates):
         with open(LOG, 'a') as log:
             entry = "{}, {}\n".format(lat, long)
@@ -95,9 +106,8 @@ def main(plan):
             log.write(entry)
 
 if __name__ == '__main__':
-    plan = sys.argv[1]
     try:
-        main(plan)
+        main()
     except KeyboardInterrupt:
         pass
 
