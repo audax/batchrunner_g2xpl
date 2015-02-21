@@ -1,6 +1,7 @@
 import re
 import sys
 import subprocess as sub
+import argparse
 from os import path
 
 WIDTH = 1
@@ -43,7 +44,8 @@ def parse_plan(plan):
     waypoints = lines[4:]
     for line in waypoints:
         parts = line.split()
-        yield int(float(parts[3])), int(float(parts[4]))
+        if parts[0] != '0':
+            yield int(float(parts[3])), int(float(parts[4]))
 
 def segments(waypoints):
     waypoints = list(waypoints)
