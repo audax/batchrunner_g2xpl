@@ -4,7 +4,6 @@ import subprocess as sub
 import argparse
 from os import path
 
-WIDTH = 1
 LOG = 'batch.log'
 G2XPL_DIRECTORY = '.'
 INI = 'g2xpl.ini'
@@ -52,10 +51,10 @@ def segments(waypoints):
     for i in range(1, len(waypoints)):
         yield waypoints[i-1], waypoints[i]
 
-def coordinates_for_segments(segs):
+def coordinates_for_segments(segs, width):
     coords = set()
     for seg in segs:
-        coords |= set(generate_coords(seg[0], seg[1], WIDTH))
+        coords |= set(generate_coords(seg[0], seg[1], width))
     return coords
 
 def run_g2xpl(lat, long):
@@ -77,6 +76,8 @@ def run_g2xpl(lat, long):
 def main():
     parser = argparse.ArgumentParser(description='Batchrunner for g2xpl')
     parser.add_argument('plan', metavar='PLAN', type=file, help='Flightplan in .fms format')
+    parser.add_argument('--width', metavar='WIDTH', type=int,
+        help='Amount of surrounding tiles to render', default=1)
     parser.add_argument('--dummy', action='store_true',
             help='Print the coordinates of the tiles and exit')
 
@@ -84,7 +85,7 @@ def main():
 
     with args.plan as p:
         route = parse_plan(p)
-        coordinates = coordinates_for_segments(segments(route))
+        coordinates = coordinates_for_segments(segments(route), width=args.width)
 
     try:
         with open(LOG, 'r+') as log:

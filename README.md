@@ -12,12 +12,15 @@ Call it like this:
 The flight plan should be in the same format as the X-Plane
 default GNS 430/530 expects.
 
+See
+
+    python batch.py --help
+
+for further information.
+
 ## Configuration
 
 Open batch.py and edit the constants at the top.
-
-#### WIDTH
-Defines many tiles around route should be created.
 
 #### LOG
 Path to the log file which is used to ensure that no tiles
